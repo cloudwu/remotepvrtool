@@ -104,12 +104,38 @@ function command.PUT(fd, args)
 	end
 end
 
+local working = {}
+
+local function wait(hash)
+	if working[hash] then
+		local co = coroutine.running()
+		skynet.error("Queue " .. hash)
+		if working[hash] == true then
+			working[hash] = { co }
+		else
+			table.insert(working[hash], co)
+		end
+		skynet.wait(co)
+	end
+end
+
+local function wakeup(hash)
+	local w = working[hash]
+	if w ~= true then
+		for _,co in ipairs(w) do
+			skynet.wakeup(co)
+		end
+	end
+	working[hash] = nil
+end
+
 -- c->s I:md5 I:md5 ... O:ext !...(command line)
 -- c<-s MISSING md5 md5 ...
 -- c<-s OK md5 (result file)
 -- c<-s ERROR string
 function command.TEX(fd, args)	-- pvrtextools
 	local download_hash = md5.sumhexa(args)
+	wait(download_hash)
 	local download_name = cache.download_name(download_hash)
 	local download_size =  lfs.attributes(download_name, "size")
 	if download_size then
@@ -119,9 +145,11 @@ function command.TEX(fd, args)	-- pvrtextools
 		socket.write(fd, "OK " .. download_hash .. "\n")
 		return
 	end
+	working[download_hash] = true
 	socket.abandon(fd)
-	local err = skynet.call(choose_convert(), "lua", "convert", fd, args, download_hash, download_name)
+	local err = skynet.call(choose_convert(), "lua", "convert", fd, args, download_hash)
 	socket.start(fd)
+	wakeup(download_hash)
 	if err then
 		error(err)
 	end
