@@ -5,8 +5,12 @@ LUA_LIB=-L/usr/local/lib -llua
 mingw : fakepvr.exe
 
 fakepvr.exe : fakepvr.c lsocket.c win_compat.c lmd5.c
-	gcc -g -Wall -o $@ $^ -I$(LUA_INC) $(LUA_LIB) -lws2_32
+	gcc -g -Wall -o $@ $^ -I$(LUA_INC) $(LUA_LIB) -lws2_32 $(SCRIPT)
+
+pvrformat : fakepvr.c lsocket.c lmd5.c
+	gcc -g -Wall -o $@ $^ -I$(LUA_INC) $(LUA_LIB) SCRIPT=-DSCRIPT=\"pvrformat.lua\"
 
 clean :
-	rm fakepvr.exe
+	rm -f fakepvr.exe
+	rm -f pvrformat
 
