@@ -4,9 +4,11 @@ local md5 = require "md5"
 local lfs = require "lfs"
 local cache = require "cachefile"
 
+local pvr_path = skynet.getenv "pvr"
+
 local config = {
-	path = "/home/cloud/pvrtex/",
-	pvrtool = "/home/cloud/pvr/PVRTexToolCLI",
+	path = pvr_path .. "/pvrtex/",
+	pvrtool = pvr_path .. "/pvr/PVRTexToolCLI",
 	slave = skynet.getenv("thread") - 2,
 }
 
