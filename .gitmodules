@@ -1,0 +1,6 @@
+[submodule "skynet"]
+	path = skynet
+	url = https://github.com/cloudwu/skynet.git
+[submodule "luafilesystem"]
+	path = luafilesystem
+	url = https://github.com/keplerproject/luafilesystem.git

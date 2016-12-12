@@ -1,9 +1,10 @@
 #!/bin/sh
-export SKYNET=/home/cloud/skynet
 export ROOT=$(cd `dirname $0`; pwd)
 export DAEMON=false
+export SKYNET=$ROOT/skynet
+export PORT=8964
 
-while getopts "Dk" arg
+while getopts "Dkp:" arg
 do
 	case $arg in
 		D)
@@ -12,6 +13,9 @@ do
 		k)
 			kill `cat $ROOT/run/skynet.pid`
 			exit 0;
+			;;
+		p)
+			export PORT=$OPTARG
 			;;
 	esac
 done

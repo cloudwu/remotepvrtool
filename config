@@ -1,5 +1,6 @@
 skynet = "$SKYNET/"
 root = "$ROOT/"
+port = $PORT
 thread = 8
 logpath = root .. "run"
 harbor = 0
@@ -7,7 +8,7 @@ start = "remoteworker"	-- main script
 bootstrap = "snlua bootstrap"	-- The service for bootstrap
 luaservice = skynet.."service/?.lua;"..root.."service/?.lua"
 lualoader = skynet .. "lualib/loader.lua"
-lua_path = skynet.."lualib/?.lua;"..skynet.."lualib/?/init.lua"..root.."lualib/?.lua"
+lua_path = skynet.."lualib/?.lua;"..skynet.."lualib/?/init.lua;"..root.."lualib/?.lua"
 lua_cpath = skynet .. "luaclib/?.so;"..root.."lualib/?.so"
 cpath = skynet.."cservice/?.so"
 if $DAEMON then

@@ -181,8 +181,9 @@ end
 
 skynet.start(function()
 	cache.init(config.path)
-	skynet.error("Listen 0.0.0.0:8964")
-	local fd = assert(socket.listen("0.0.0.0", 8964))
+	local port = skynet.getenv("port") or 8964
+	skynet.error("Listen 0.0.0.0:"..port)
+	local fd = assert(socket.listen("0.0.0.0", port))
 	init_convert()
 	socket.start(fd, function(cfd, addr)
 		skynet.error(addr .. " connected")
