@@ -1,3 +1,5 @@
+-- Usage: pvrformat xxx.meta ETC2_RGBA ETC1 PVRTC1_4
+
 local lsocket = require "lsocket"
 local md5 = require "md5"
 
