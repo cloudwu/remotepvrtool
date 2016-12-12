@@ -4,7 +4,9 @@
 #include <lauxlib.h>
 #include <lualib.h>
 
+#ifndef SCRIPT
 #define SCRIPT "pvrtextool.lua"
+#endif
 
 int luaopen_md5(lua_State *L);
 int luaopen_lsocket(lua_State *L);
