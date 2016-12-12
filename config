@@ -1,7 +1,7 @@
 skynet = "$SKYNET/"
 root = "$ROOT/"
 port = $PORT
-thread = 8
+thread = $THREAD + 2
 logpath = root .. "run"
 harbor = 0
 start = "remoteworker"	-- main script
