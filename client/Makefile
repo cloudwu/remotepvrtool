@@ -8,7 +8,7 @@ fakepvr.exe : fakepvr.c lsocket.c win_compat.c lmd5.c
 	gcc -g -Wall -o $@ $^ -I$(LUA_INC) $(LUA_LIB) -lws2_32 $(SCRIPT)
 
 pvrformat : fakepvr.c lsocket.c lmd5.c
-	gcc -g -Wall -o $@ $^ -I$(LUA_INC) $(LUA_LIB) SCRIPT=-DSCRIPT=\"pvrformat.lua\"
+	gcc -g -Wall -o $@ $^ -I$(LUA_INC) $(LUA_LIB) -DSCRIPT=\"pvrformat.lua\"
 
 clean :
 	rm -f fakepvr.exe

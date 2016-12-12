@@ -7,7 +7,7 @@ local cache = require "cachefile"
 local config = {
 	path = "/home/cloud/pvrtex/",
 	pvrtool = "/home/cloud/pvr/PVRTexToolCLI",
-	slave = 8,
+	slave = skynet.getenv("thread") - 2,
 }
 
 local command = {}
@@ -184,6 +184,7 @@ skynet.start(function()
 	local port = skynet.getenv("port") or 8964
 	skynet.error("Listen 0.0.0.0:"..port)
 	local fd = assert(socket.listen("0.0.0.0", port))
+	skynet.error("Worker:"..config.slave)
 	init_convert()
 	socket.start(fd, function(cfd, addr)
 		skynet.error(addr .. " connected")

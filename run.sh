@@ -3,8 +3,9 @@ export ROOT=$(cd `dirname $0`; pwd)
 export DAEMON=false
 export SKYNET=$ROOT/skynet
 export PORT=8964
+export THREAD=8
 
-while getopts "Dkp:" arg
+while getopts "Dkp:t:" arg
 do
 	case $arg in
 		D)
@@ -16,6 +17,9 @@ do
 			;;
 		p)
 			export PORT=$OPTARG
+			;;
+		t)
+			export THREAD=$OPTARG
 			;;
 	esac
 done
