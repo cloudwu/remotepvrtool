@@ -48,17 +48,20 @@ local function convert(fd, args, download_hash)
 		return
 	end
 	local cl = args:sub(from+1)
-	local tmp_download = os.tmpname() .. "." .. output_ext
+	local tmp_download_noext = os.tmpname()
+	local tmp_download = tmp_download_noext .. "." .. output_ext
 	cl = string.format("%s %s -i %s -o %s", config.pvrtool, cl, table.concat(input, ","), tmp_download)
 	skynet.error(cl)
 	local ok = os.execute(cl)
 	if not ok then
+		remove(tmp_download_noext)
 		remove(tmp_download)
 		skynet.error("Call failed")
 		socket.write(fd, "ERROR command run failed\n")
 		return
 	end
 	local ok, err = lfs.link(tmp_download, download_name)
+	remove(tmp_download_noext)
 	remove(tmp_download)
 	if not ok then
 		socket.write(fd, "ERROR rename failed\n")
