@@ -3,7 +3,11 @@ local md5 = require "md5"
 
 local addr = "cookie.ejoy"
 local port = 8964
-local logfile = os.getenv("TMP") .. "/pvrtextool.log"
+local tmpdir = os.getenv("TMP")
+if tmpdir == nil or tmpdir == "" then
+	tmpdir = "/tmp"
+end
+local logfile = tmpdir .. "/pvrtextool.log"
 
 ----- block socket
 
