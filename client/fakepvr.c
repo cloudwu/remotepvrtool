@@ -40,6 +40,11 @@ main(int argc, char *argv[]) {
 		lua_close(L);
 		return 1;
 	}
+	lua_createtable(L, argc, 1);
+	lua_pushstring(L, argv[0]);
+	lua_seti(L, -2, 0);
+	int arg = lua_gettop(L);
+
 	int ok = luaL_loadfile(L, script);
 	if (ok != LUA_OK) {
 		printf("Err: %s", lua_tostring(L, -1));
@@ -49,7 +54,11 @@ main(int argc, char *argv[]) {
 	luaL_checkstack(L, argc, NULL);
 	for (i=1;i<argc;i++) {
 		lua_pushstring(L, argv[i]);
+		lua_pushvalue(L, -1);
+		lua_seti(L, arg, i);
 	}
+	lua_pushvalue(L, arg);
+	lua_setglobal(L, "arg");
 	if (lua_pcall(L, argc-1, 0, 0) != LUA_OK) {
 		printf("Err: %s", lua_tostring(L, -1));
 		lua_close(L);
