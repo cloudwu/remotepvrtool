@@ -3,6 +3,7 @@ local md5 = require "md5"
 
 local addr = "cookie.ejoy"
 local port = 8964
+local local_tool = "PVRTexToolCLI.exe"
 local tmpdir = os.getenv("TMP")
 if tmpdir == nil or tmpdir == "" then
 	tmpdir = "/tmp"
@@ -16,7 +17,7 @@ if f then
 	function print(...)
 		local tmp = table.pack(...)
 		for i = 1, tmp.n do
-			f:write(tmp[i],"\t")
+			f:write(tostring(tmp[i]),"\t")
 		end
 		f:write("\n")
 	end
@@ -299,6 +300,23 @@ end
 local ok, err = pcall(main)
 
 if not ok then
+	local function commandline(...)
+		local cl = { local_tool }
+		for _, v in ipairs {...} do
+			v = v:gsub('"' , '\\"')
+			if v:find "%s" then
+				table.insert(cl, '"' .. v .. '"')
+			else
+				table.insert(cl, v)
+			end
+		end
+		return table.concat(cl, " ")
+	end
 	print(err)
-	os.exit(1)
+	local cl = commandline(...)
+	print("Call Local :", cl)
+	local ok = os.execute(cl)
+	if not ok then
+		os.exit(1)
+	end
 end
