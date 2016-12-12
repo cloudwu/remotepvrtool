@@ -95,7 +95,10 @@ function command.PUT(fd, args)
 	f:write(data)
 	f:close()
 	local ok, err = lfs.link(tn, fullpath)
-	os.remove(tn)
+	local remove_ok, err2 = os.remove(tn)
+	if not remove_ok then
+		skynet.error("Remove failed: " .. tn .. " " .. err2)
+	end
 	if not ok then
 		socket.write(fd, "ERROR write failed\n")
 		error (err)

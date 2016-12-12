@@ -6,6 +6,13 @@ local cache = require "cachefile"
 
 local config
 
+local function remove(filename)
+	local ok, err = os.remove(filename)
+	if not ok then
+		skynet.error("Remove failed: " .. filename .. " " .. err)
+	end
+end
+
 local function convert(fd, args, download_hash)
 	local download_name = cache.download_name(download_hash)
 	local input
@@ -46,13 +53,13 @@ local function convert(fd, args, download_hash)
 	skynet.error(cl)
 	local ok = os.execute(cl)
 	if not ok then
-		os.remove(tmp_download)
+		remove(tmp_download)
 		skynet.error("Call failed")
 		socket.write(fd, "ERROR command run failed\n")
 		return
 	end
 	local ok, err = lfs.link(tmp_download, download_name)
-	os.remove(tmp_download)
+	remove(tmp_download)
 	if not ok then
 		socket.write(fd, "ERROR rename failed\n")
 		error (err)
