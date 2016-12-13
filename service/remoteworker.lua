@@ -14,23 +14,42 @@ local config = {
 
 local command = {}
 local convert = {}
+local queue = {}
 
 local function init_convert()
-	convert.n = 1
 	for i = 1, config.slave do
 		local s = skynet.newservice("textool")
 		skynet.call(s, "lua", "init", config)
 		convert[i] = s
+		queue[i] = 0
 	end
+	skynet.info_func(function()
+		return queue
+	end)
 end
 
-local function choose_convert()
-	local s = convert[convert.n]
-	convert.n = convert.n + 1
-	if convert.n > config.slave then
-		convert.n = 1
+local function convert_call(...)
+	local idx = 1
+	local min = queue[1]
+	if min > 0 then
+		for i = 2, config.slave do
+			local ql = queue[idx]
+			if ql == 0 then
+				idx = i
+				break
+			end
+			if ql < min then
+				min = ql
+				idx = i
+			end
+		end
 	end
-	return s
+
+	local s = convert[idx]
+	queue[idx] = queue[idx] + 1
+	local ok, err = pcall(skynet.call, s, "lua", "convert", ...)
+	queue[idx] = queue[idx] - 1
+	return err
 end
 
 -- c->s md5
@@ -152,7 +171,7 @@ function command.TEX(fd, args)	-- pvrtextools
 	end
 	working[download_hash] = true
 	socket.abandon(fd)
-	local err = skynet.call(choose_convert(), "lua", "convert", fd, args, download_hash)
+	local err = convert_call(fd, args, download_hash)
 	socket.start(fd)
 	wakeup(download_hash)
 	if err then
