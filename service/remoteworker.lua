@@ -185,6 +185,7 @@ local function dispatch(cfd)
 end
 
 skynet.start(function()
+	skynet.newservice("debug_console",8000)
 	cache.init(config.path)
 	local port = skynet.getenv("port") or 8964
 	skynet.error("Listen 0.0.0.0:"..port)
