@@ -76,6 +76,21 @@ function command.GET(fd, hash)
 	socket.write(fd, data)
 end
 
+local function exist_file(fullpath, fd, size)
+	local sz = lfs.attributes(fullpath, "size")
+	if sz then
+		if sz ~= size then
+			socket.write(fd, "ERROR Invalid size\n")
+			error (string.format("Invalid size %d | %d", size, sz))
+		else
+			lfs.touch(fullpath)
+			socket.write(fd, "EXIST\n")
+			return true
+		end
+	end
+	return false
+end
+
 -- c->s size md5.ext
 -- c<-s EXIST
 --      OK
@@ -89,16 +104,8 @@ function command.PUT(fd, args)
 	end
 	size = tonumber(size)
 	local fullpath = cache.upload_name(hash, ext)
-	local sz = lfs.attributes(fullpath, "size")
-	if sz then
-		if sz ~= size then
-			socket.write(fd, "ERROR Invalid size\n")
-			error (string.format("Invalid size %d | %d", size, sz))
-		else
-			lfs.touch(fullpath)
-			socket.write(fd, "EXIST\n")
-			return
-		end
+	if exist_file(fullpath, fd, size) then
+		return
 	end
 	socket.write(fd, "OK\n")
 	local data = assert(socket.read(fd, size), "size invalid")
@@ -121,6 +128,9 @@ function command.PUT(fd, args)
 		skynet.error("Remove failed: " .. tn .. " " .. err2)
 	end
 	if not ok then
+		if exist_file(fullpath, fd, size) then
+			return
+		end
 		socket.write(fd, "ERROR write failed\n")
 		error (err)
 	else
