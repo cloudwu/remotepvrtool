@@ -248,12 +248,7 @@ local function main()
 
 	local f = args["-f"][1]
 
-	if not format_list[f] then
-		print("Format not in list", f)
-		return
-	end
-
-	format_list[f] = nil
+	format_list[f] = true
 
 	for fm in pairs(format_list) do
 		args["-f"][1] = fm
