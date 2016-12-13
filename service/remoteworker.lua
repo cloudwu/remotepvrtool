@@ -33,7 +33,7 @@ local function convert_call(...)
 	local min = queue[1]
 	if min > 0 then
 		for i = 2, config.slave do
-			local ql = queue[idx]
+			local ql = queue[i]
 			if ql == 0 then
 				idx = i
 				break
