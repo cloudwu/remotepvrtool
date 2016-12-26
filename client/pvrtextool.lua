@@ -15,7 +15,7 @@ local logfile = tmpdir .. "/pvrtextool.log"
 local f = io.open(logfile, "ab")
 if f then
 	function print(...)
-		local tmp = table.pack(...)
+		local tmp = table.pack(os.date(), ...)
 		for i = 1, tmp.n do
 			f:write(tostring(tmp[i]),"\t")
 		end
