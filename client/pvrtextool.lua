@@ -266,6 +266,7 @@ local function download_file(hash)
 	end
 	size = tonumber(size)
 	local data = fd:read(size)
+	assert(#data == size)
 	fd:close()
 	return data
 end
@@ -293,7 +294,7 @@ local function main()
 
 	print("Write:", output)
 	local f = assert(io.open(output,"wb"))
-	f:write(data)
+	assert(f:write(data))
 	f:close()
 end
 
